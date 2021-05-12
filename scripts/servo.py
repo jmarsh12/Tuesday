@@ -49,16 +49,25 @@ def closePort(portHandler, packetHandler):
     
 def callback(data):
     print(rospy.get_caller_id() + 'I heard %s', data.data)
-    values = data.data.split(',')
-    servo = int(values[0])
-    position  = int(values[1])
-    if (len(values) > 2 and len(values) % 2 == 0):
+    # Check for need to split multiple values
+    # Data can be formatted"1,200" or "(1,200),(2,400)"
+    pairs = data.data.split('),')
+
+    for pair in pairs:
+        pair = pair.replace('(', '') # Remove 
+        pair = pair.replace(')', '') # Remove final )
+        values = pair.split(',')
+        servo = int(values[0])
+        position  = int(values[1]) 
         moveServo(portHandler, packetHandler, servo, position)
-        time.sleep(0.1)
-        moveServo(portHandler, packetHandler, values[2], values[3])
-    else:
-        moveServo(portHandler, packetHandler, servo, position)
-    time.sleep(2)
+        time.sleep(1)
+    
+    # BACKUP BELOW - If anything breaks, recover this code and delete the broken code
+    #values = data.data.split(',')
+    #servo = int(values[0])
+    #position  = int(values[1]) 
+    #moveServo(portHandler, packetHandler, servo, position)
+    #time.sleep(2)
 
 def listener():
 

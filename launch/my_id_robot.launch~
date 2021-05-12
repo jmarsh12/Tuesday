@@ -1,0 +1,32 @@
+<launch>
+<node
+	pkg="my_id_robot"
+	type="main_id_subscriber"
+	name="subscriber"
+	launch-prefix="lxterminal -e"
+	/>
+<node
+	pkg="my_id_robot"
+	type="id_continuous"
+	name="voice"
+	launch-prefix="lxterminal -e"
+	/>			  
+<node
+	pkg="my_id_robot"
+	type="main_object"
+	name="moveToObject"
+	launch-prefix="lxterminal -e"
+	/>
+<node
+	pkg="my_id_robot"
+	type="find_object_opencv"
+	name="opencv"
+	launch-prefix="lxterminal -e"
+	/>
+<node
+	pkg="my_id_robot"
+	type="servo.py"
+	name="servo"
+	launch-prefix="lxterminal -e"
+	/>
+</launch>

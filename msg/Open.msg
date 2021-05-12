@@ -1,0 +1,3 @@
+string id_object
+uint16 x
+uint16 y

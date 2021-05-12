@@ -1,0 +1,95 @@
+################################################################################
+# Set minimum required version of cmake, project name and compile options
+################################################################################
+cmake_minimum_required(VERSION 2.8.3)
+project(my_id_robot)
+
+## Compile as C++11, supported in ROS Kinetic and newer
+add_compile_options(-std=c++11)
+
+################################################################################
+# Find catkin packages and libraries for catkin and system dependencies
+################################################################################
+find_package(catkin REQUIRED
+  OpenCV 4.1.0 REQUIRED
+  COMPONENTS
+  roscpp
+  rospy
+  std_msgs
+  message_generation
+  )
+
+message("OpenCV version: ${OpenCV_VERSION}")
+
+################################################################################
+# Declare ROS messages, services and actions
+################################################################################
+## Generate messages in the 'msg' folder
+add_message_files(
+  FILES
+  Open.msg
+)
+
+## Generate services in the 'srv' folder
+add_service_files(
+  FILES
+  FindObjectOpenCV.srv
+)
+
+## Generate added messages and services with any dependencies listed here
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
+
+################################################################################
+# Declare catkin specific configuration to be passed to dependent projects
+################################################################################
+catkin_package(
+  CATKIN_DEPENDS
+  roscpp
+  rospy
+  std_msgs
+#  message_runtime
+#  FindObjectOpenCV
+#  DEPENDS system_lib
+)
+
+################################################################################
+# Build
+################################################################################
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  /opt/opencv-4.1.0/include/opencv4
+  )
+
+link_directories(${OpenCV_LIB_DIR})
+
+add_executable(find_object_opencv src/find_object_opencv.cpp)
+target_link_libraries(
+  find_object_opencv
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}  # opt/opencv-4.1.0/lib
+  )
+
+add_executable(main_object src/main_object.cpp)
+target_link_libraries(main_object
+  ${catkin_LIBRARIES})
+#add_dependencies(find_object_opencv 
+#  ${{PROJECT_NAME}_EXPORTED_TARGETS}
+#  ${catkin_EXPORTED_TARGETS})
+
+install(
+  TARGETS
+  find_object_opencv
+  main_object
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )
+
+catkin_install_python(
+  PROGRAMS
+  scripts/servo.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )

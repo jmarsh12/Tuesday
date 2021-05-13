@@ -17,9 +17,10 @@ void findObjectCallback(const std_msgs::String::ConstPtr& msg)
   srv.request.id_object = "object";
 
   ROS_INFO("Got request to find Object");
+  // try to establish a connection to OpenCV. Throw an error if it fails.
   if (client.call(srv))
   {
-    int position = 400;
+    int position = 400; // unused
     ROS_INFO("X: %d", srv.response.x);
     ROS_INFO("Y: %d", srv.response.y);
     ss_message.clear();

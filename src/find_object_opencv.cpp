@@ -5,6 +5,9 @@
 using namespace cv;
 using namespace std;
 
+// params: image  - Mat array? Holds real data to image
+//         x      - reference to width of image?
+//         y      - reference to height of image?
 void findContours(Mat image, int &x, int &y)
 {
 
@@ -23,13 +26,24 @@ void findContours(Mat image, int &x, int &y)
     {
       for (i = 0; i < contours.size(); i++)
 	{
+	  //TODO: add a way to find the width of the object.
+	  //      because a fat pen needs the hand to close
+	  //      less than a thin cord.
+	  //      Alternative: add pressure sensing to hand.
+	  
 	  Point2f center;
 	  float radius;
+
+	  // circle the object in the image
 	  minEnclosingCircle(contours[i], center, radius);
 	  circle(image, center, radius, (0, 255, 0), 2, 8);
+
+	  // Show the countoured image and wait for a keypress to move on
 	  //	  imshow("Image", image);
 	  //waitKey(0);
 	  //destroyWindow("Image");
+
+	  // mark the center of the object
 	  x = int(center.x);
 	  y = int(center.y);
 	  ROS_INFO("Object found %d, %d", x, y);
@@ -44,6 +58,7 @@ bool find_object(my_id_robot::FindObjectOpenCV::Request  &req,
   ROS_INFO("Got a call to find an Object");
   VideoCapture capture(0);
 
+  // test to make sure video is working
   if (!capture.isOpened())
     ROS_INFO("Camera not opened");
   else
@@ -63,6 +78,7 @@ bool find_object(my_id_robot::FindObjectOpenCV::Request  &req,
       medianBlur(grey_image,img_noise, 3);
       threshold(img_noise, image_threshold, 0, 255, THRESH_OTSU);
       findContours(image_threshold, x, y);
+      // res.x and res.y represent object x and y on the image
       res.x = x;
       res.y = y;
       ROS_INFO("request: s=%s", req.id_object.c_str() );

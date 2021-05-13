@@ -10,6 +10,7 @@ std_msgs::String servo_msg;
 std::stringstream ss_message;
 
 
+// TODO: Get this to start using msg. It just searches for 'object' now.
 void findObjectCallback(const std_msgs::String::ConstPtr& msg)
 {
   my_id_robot::FindObjectOpenCV srv;

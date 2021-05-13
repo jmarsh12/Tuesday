@@ -14,18 +14,18 @@ void voiceCallback(const std_msgs::String::ConstPtr& msg)
 {
   ROS_INFO("I heard: [%s]", msg->data.c_str());
   if (strcmp(msg->data.c_str(), "hello") == 0)
-    {
+  {
       std::system("espeak -vf4 \"hello\"");
-    }
+  }
   if (strcmp(msg->data.c_str(), "object") == 0)
-    {
+  {
       ss_message.clear();
       ss_message.str("");
       ss_message << "object";
       opencv_msg.data = ss_message.str();
       ROS_INFO("%s", opencv_msg.data.c_str());
       opencv_pub.publish(opencv_msg);
-    }
+  }
 }
 
 int main(int argc, char **argv)

@@ -37,7 +37,7 @@ void findObjectCallback(const std_msgs::String::ConstPtr& msg)
   }
   catch (Exception *e)// else
   {
-    ROS_ERROR("Failed to call service find_object_opencv. Exception " << e->message);
+    ROS_ERROR("Failed to call service find_object_opencv. Exception &d", e->message);
     ROS_ERROR(e->StackTrace);
     return;
   }

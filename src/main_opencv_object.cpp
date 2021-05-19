@@ -18,8 +18,9 @@ void findObjectCallback(const std_msgs::String::ConstPtr& msg)
 
   ROS_INFO("Got request to find Object");
   // try to establish a connection to OpenCV. Throw an error if it fails.
-  if (client.call(srv))
+  try // if (client.call(srv))
   {
+    (client.call(srv)) 
     int position = 400; // unused
     ROS_INFO("X: %d", srv.response.x);
     ROS_INFO("Y: %d", srv.response.y);
@@ -27,15 +28,17 @@ void findObjectCallback(const std_msgs::String::ConstPtr& msg)
     ss_message.str("");
     if (srv.response.x > 500)
       ss_message << "3, " << 300;
+    
     else
       ss_message << "3, " << 700;
     servo_msg.data = ss_message.str();
     ROS_INFO("sending to servo %s", servo_msg.data);
     servoControl.publish(servo_msg);
   }
-  else
+  catch (Exception *e)// else
   {
-    ROS_ERROR("Failed to call service find_object_opencv");
+    ROS_ERROR("Failed to call service find_object_opencv. Exception " << e->message);
+    ROS_ERROR(e->StackTrace);
     return;
   }
   return;

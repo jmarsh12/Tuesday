@@ -18,7 +18,7 @@ def rescale_frame(frame, scale=0.75):
 
     return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
 
-resized_image = rescaleFrame(img)
+resized_image = rescale_frame(img)
 cv.imshow('', resized_image)
 
 

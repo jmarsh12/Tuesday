@@ -1,3 +1,10 @@
+##################################################
+# move_arm.py
+# calculates the position the arm should move to after receiving the position of 
+# an object, usually from opencv_find.py
+# Publishes to servo_control
+##################################################
+
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Int16MultiArray

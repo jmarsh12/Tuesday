@@ -1,5 +1,10 @@
+# import rospy
+# from std_msgs.msg import String
+
 from opencv_hand_tracker import *
 import cv2
+
+
 
 def main():
     # FPS times
@@ -7,6 +12,8 @@ def main():
     currentTime = 0
 
     cap = cv2.VideoCapture(0)
+    # Start: publish camera dimensions (x, y)
+
     detector = hand_detector()
 
     while True:
@@ -17,7 +24,8 @@ def main():
         img = detector.find_hands(img)
 
         # get and display coordinates of one landmark
-        coords = detector.get_coords(landmark_id=8, img=img, draw=True)
+        coords = detector.get_coords_ratio(landmark_id=8, img=img, draw=True)
+        
         if coords:
             x, y = coords
             coord_disp = str(x) + ", " + str(y)

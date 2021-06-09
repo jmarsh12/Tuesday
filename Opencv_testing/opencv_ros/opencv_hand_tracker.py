@@ -119,6 +119,7 @@ class hand_detector():
                 if id == landmark_id:
                     if draw:
                         cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
+
                     return cx, cy
         return None
 
@@ -137,12 +138,14 @@ class hand_detector():
         if self.results.multi_hand_landmarks:
             my_hand = self.results.multi_hand_landmarks[hand_num]
             for id, lm in enumerate(my_hand.landmark):
-                height,width,channel = img.shape
+                h,w,c = img.shape
+                cx, cy = int(lm.x*w), int(lm.y*h) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
 
                 if id == landmark_id:
                     if draw:
-                        cv2.circle(img, (width, height), 10, (255, 255, 0), cv2.FILLED)
-                    return width, height
+                        cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
+
+                    return lm.x, lm.y
         return None
 
 

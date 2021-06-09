@@ -1,4 +1,3 @@
-
 import rospy
 from std_msgs.msg import String
 from dynamixel_sdk import *

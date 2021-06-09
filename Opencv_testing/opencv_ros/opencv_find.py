@@ -141,7 +141,6 @@ def main():
 
         # search for and mark hands
         img = detector.find_hands(img)
-        # detector.find_position(img, draw=True)
         coords = detector.get_coords(landmark_id=4, img=img, draw=True)
         if coords:
             x, y = coords

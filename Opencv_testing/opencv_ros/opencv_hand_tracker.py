@@ -95,7 +95,7 @@ class hand_detector():
                     return cx, cy
         return None
 
-    def get_coords(self, hand_num=0, landmark_id=0, img=None, draw=False):
+    def get_coords_pixels(self, hand_num=0, landmark_id=0, img=None, draw=False):
         """
         img
         hand_hum       The index of the hand to be found
@@ -105,10 +105,8 @@ class hand_detector():
         
         vocab - lm = landmark
                     id = index of landmark in hand. Each hand has 20.
-        Returns: landmark coordinates (x, y)
+        Returns: landmark coordinates as number of pixel (x, y)
         """
-
-        lm_list = []
         
         if self.results.multi_hand_landmarks:
             my_hand = self.results.multi_hand_landmarks[hand_num]
@@ -118,13 +116,36 @@ class hand_detector():
                 h,w,c = img.shape
                 cx, cy = int(lm.x*w), int(lm.y*h) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
 
-                lm_list.append([id, cx, cy])
-
                 if id == landmark_id:
                     if draw:
                         cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
                     return cx, cy
         return None
+
+    def get_coords_ratio(self, hand_num=0, landmark_id=0, img=None, draw=False):
+        """
+        img
+        hand_hum       The index of the hand to be found
+        landmark_id     Landmark id to retrieve
+        img                 The image that hands were detected from
+        draw                Whether or not to draw the landmark
+        
+        vocab - lm = landmark
+                    id = index of landmark in hand. Each hand has 20.
+        Returns: landmark coordinates as ratios between 1 and 0 (x, y)
+        """
+        if self.results.multi_hand_landmarks:
+            my_hand = self.results.multi_hand_landmarks[hand_num]
+            for id, lm in enumerate(my_hand.landmark):
+                height,width,channel = img.shape
+
+                if id == landmark_id:
+                    if draw:
+                        cv2.circle(img, (width, height), 10, (255, 255, 0), cv2.FILLED)
+                    return width, height
+        return None
+
+
 
 
 def main():

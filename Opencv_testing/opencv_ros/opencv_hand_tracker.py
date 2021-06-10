@@ -76,23 +76,19 @@ class hand_detector():
                     id = index of landmark in hand. Each hand has 20.
         Returns: mediapipe landmark
         """
-
-        lm_list = []
         
         if self.results.multi_hand_landmarks:
             my_hand = self.results.multi_hand_landmarks[hand_num]
             for id, lm in enumerate(my_hand.landmark):
-                # convert from ratio coordinates to pixel coordinates
-                # height, width, channel(rgb)
-                h,w,c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
-
-                lm_list.append([id, cx, cy])
 
                 if id == landmark_id:
                     if draw:
+                        # convert from ratio coordinates to pixel coordinates
+                        height, width, channel = img.shape
+                        cx, cy = int(lm.x*width), int(lm.y*height) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
                         cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
-                    return cx, cy
+                        
+                    return lm
         return None
 
     def get_coords_pixels(self, hand_num=0, landmark_id=0, img=None, draw=False):
@@ -111,12 +107,11 @@ class hand_detector():
         if self.results.multi_hand_landmarks:
             my_hand = self.results.multi_hand_landmarks[hand_num]
             for id, lm in enumerate(my_hand.landmark):
-                # convert from ratio coordinates to pixel coordinates
-                # height, width, channel(rgb)
-                h,w,c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
 
                 if id == landmark_id:
+                    # convert from ratio coordinates to pixel coordinates
+                    height,width,channel = img.shape
+                    cx, cy = int(lm.x*width), int(lm.y*height) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
                     if draw:
                         cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
 
@@ -138,17 +133,15 @@ class hand_detector():
         if self.results.multi_hand_landmarks:
             my_hand = self.results.multi_hand_landmarks[hand_num]
             for id, lm in enumerate(my_hand.landmark):
-                h,w,c = img.shape
-                cx, cy = int(lm.x*w), int(lm.y*h) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
 
                 if id == landmark_id:
                     if draw:
+                        height,width,channel = img.shape
+                        cx, cy = int(lm.x*width), int(lm.y*height) # ex. if x is 0.5 and the img is 500px wide, then 0.5 * 500px = 250px. Coordinate x is 250px
                         cv2.circle(img, (cx, cy), 10, (255, 255, 0), cv2.FILLED)
 
                     return lm.x, lm.y
         return None
-
-
 
 
 def main():

@@ -10,24 +10,28 @@ from std_msgs.msg import String
 from std_msgs.msg import Int16MultiArray
 import time
     
-# May not work until after init_node has been run
-servo_publisher = rospy.Publisher('servo_control', String, queue_size=10)
-
-def callback(data):
-    print("Feelin' good")
+servo_publisher = None
 
 def receive_coords(data):
+    """
+    data  - Int16MultiArray: [x, y]  or  String: "x, y"
+    """
     # Receive img coords from opencv_find as Int16MultiArray
+    # rospy.Publisher(str, Int16MultiArray, queue_size=1)
+    # variable = Int16MulitArray
+
     coords = data.data # [x, y]  or  "x, y"
+
+    # keep variables in scope
     x = 0.0
     y = 0.0
-    # If it's a string...
+    # If String
     if isinstance(coords, str):
         x, y = coords.split(', ')
         x = float(x)
         y = float(y)
+    # If Int16MultiArray
     else:
-        # If it's an array...
         x = coords[0]
         y = coords[1]
 
@@ -36,21 +40,25 @@ def receive_coords(data):
     servo_base_max = 700
     
     new_x = int((servo_base_max - servo_base_min) * x + (servo_base_min))
-    new_y = 15 # just because...
+    new_y = None # Not used yet
+    servo_num = 7 # Just move the base during testing...
     
     # if publishing as int16MultiArray...
     # new_coords = [new_x, new_y]
 
     # if publishing as String...
-    new_coords = str(new_x) + ',' + str(new_y)
-
+    new_coords = str(servo_num) + ',' + str(new_x)
+    
     # send new coords to servos
     servo_publisher.publish(new_coords) 
 
+# TODO: Call this before anything else
 def listener():
 
+    # create rospy node and subscribe to finger coordinates
     rospy.init_node('move_arm', anonymous = True)
-    rospy.Subscriber('finger_coords', String, callback=receive_coords)
+    rospy.Subscriber('opencv_coordinates', String, callback=receive_coords)
+    servo_publisher = rospy.Publisher('servo_control', String, queue_size=10)
     rospy.spin()
 
 

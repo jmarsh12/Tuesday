@@ -10,7 +10,7 @@ opencv_publisher = None
 
 
 # Receive message - object name
-def find_object(data)
+def find_object(data):
     """
     data  - an object holding String: object name
 

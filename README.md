@@ -13,10 +13,13 @@ The Raspberry Pi will be the brain of the project, running Robot Operating Syste
 # Future Work
 * Build Robot Operating System Environment
 * Servos
-* Get OpenCV Running
 * PocketSphinx and eSpeak
-* Respond to Movement and Commands
+* Finish move_arm
+* Voice input
 
+# Story
+This is a project to help us and other students to learn OpenCV and ROS. This can be extended
+to any other robotics systems from a fruit picker to an ankle biter/pooper scooper.
 
 ## Authors:
 ### Jeff Marsh and Adam Amott

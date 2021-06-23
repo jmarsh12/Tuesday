@@ -3,18 +3,18 @@ from std_msgs.msg import String
 from dynamixel_sdk import *
 import time
 
-ADDR_PRO_TORQUE_ENABLE      = 24               
+ADDR_PRO_TORQUE_ENABLE      = 24
 ADDR_PRO_GOAL_POSITION      = 30
 ADDR_PRO_PRESENT_POSITION   = 37
-PROTOCOL_VERSION            = 2.0       
-DXL_ID                      = 2         
-BAUDRATE                    = 57600     
-DEVICENAME                  = '/dev/ttyUSB0'    
-TORQUE_ENABLE               = 1                 
-TORQUE_DISABLE              = 0             
-DXL_MINIMUM_POSITION_VALUE  = 10           
-DXL_MAXIMUM_POSITION_VALUE  = 4000         
-DXL_MOVING_STATUS_THRESHOLD = 20           
+PROTOCOL_VERSION            = 2.0
+DXL_ID                      = 2     
+BAUDRATE                    = 57600
+DEVICENAME                  = '/dev/ttyUSB0'
+TORQUE_ENABLE               = 1
+TORQUE_DISABLE              = 0            
+DXL_MINIMUM_POSITION_VALUE  = 10
+DXL_MAXIMUM_POSITION_VALUE  = 4000
+DXL_MOVING_STATUS_THRESHOLD = 20
 portHandler = "global"
 packetHander = "global"
 
@@ -53,20 +53,13 @@ def callback(data):
     pairs = data.data.split('),')
 
     for pair in pairs:
-        pair = pair.replace('(', '') # Remove 
+        pair = pair.replace('(', '') # Remove first (
         pair = pair.replace(')', '') # Remove final )
         values = pair.split(',')
         servo = int(values[0])
         position  = int(values[1]) 
         moveServo(portHandler, packetHandler, servo, position)
         time.sleep(1)
-    
-    # BACKUP BELOW - If anything breaks, recover this code and delete the broken code
-    #values = data.data.split(',')
-    #servo = int(values[0])
-    #position  = int(values[1]) 
-    #moveServo(portHandler, packetHandler, servo, position)
-    #time.sleep(2)
 
 def listener():
 

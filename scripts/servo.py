@@ -1,3 +1,34 @@
+##############################
+# Servo.py
+# Controls servos over a serial port
+# each message can be sent like so:
+# packetHandler.write4ByteTxRx(portHandler, number, parameter_num, parameter_val)
+# Where parameter_num is the parameter you want to set (speed, position, torque, etc)
+# and parameter_val is the value to set it to ( speed can be 0-2048, torque enable is 0 or 1)
+# To get a list of parameters, see
+# https://emanual.robotis.com/docs/en/dxl/x/xl320/
+#------------------------------------------------------------------------------------
+# Parameter_num															Min	Max
+#		Size  Parameter Name		Description				Access	Initial value
+#------------------------------------------------------------------------------------
+# 24 	1 	Torque Enable			Motor Torque On/Off			RW 	0 	0 	1
+# 25 	1 	LED						Status LED On/Off			RW 	0 	0 	7
+# 27 	1 	D Gain					Derivative Gain				RW 	0 	0 	254
+# 28 	1 	I Gain					Integral Gain				RW 	0 	0 	254
+# 29 	1 	P Gain					Proportional Gain			RW 	32 	0 	254
+# 30 	2 	Goal Position			Desired Position			RW 	- 	0 	1023
+# 32 	2 	Moving Speed			Moving Speed		 		RW 	- 	0 	2047
+# 35 	2 	Torque Limit			Torque Limit 				RW 	- 	0 	1023
+# 37 	2 	Present Position		Present Position 			R 	- 	- 	-
+# 39 	2 	Present Speed			Present Speed 				R 	- 	- 	-
+# 41 	2 	Present Load			Present Load 				R 	- 	- 	-
+# 45 	1 	Present Voltage			Present Voltage 			R 	- 	- 	-
+# 46 	1 	Present Temperature 	Present Temperature 		R 	- 	- 	-
+# 47 	1 	Registered Instruction  If Instruction is registeredR 	0 	- 	-
+# 49 	1 	Moving					Movement Status 			R 	0 	- 	-
+# 50 	1 	Hardware Error Status	Hardware Error Status 		R 	0 	- 	-
+# 51 	2 	Punch					Minimum Current	Threshold 	RW 	32 	0 	1023
+
 import rospy
 from std_msgs.msg import String
 from dynamixel_sdk import *

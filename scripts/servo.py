@@ -98,7 +98,6 @@ def listener():
     rospy.Subscriber('servo_control', String, callback)
     rospy.spin()
 
-
 if __name__ == '__main__':
     
     portHandler, packetHandler = openPort()

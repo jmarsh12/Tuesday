@@ -9,7 +9,7 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Int16MultiArray
 import time
-from math import sin, cos, tan, asin, acos, atan, sqrt # import sin, cosine, and tangent
+from math import sin, cos, tan, asin, acos, atan, degrees, sqrt # import sin, cosine, and tangent
     
 servo_publisher = None
 
@@ -17,6 +17,10 @@ servo_publisher = None
 STRAIGHT = 520 # arm facing straight forward
 LEFT = 840
 RIGHT = 220
+
+CAMERA_WIDTH = 1280
+CAMERA_HEIGHT = 720
+ARM_HEIGHT_OFFSET = -205
 
 # found at https://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
 def scale_between(unscaled_num, new_min, new_max, old_min, old_max):
@@ -34,9 +38,14 @@ def calc_base_pos(adjacent, hypotenuse):
 
     return servo_pos
 
+#
+def calc_angle_opposite_of_hypotenuse(hypotenuse, base, adjacent):
+    degrees(acos((adjacent * adjacent + base * base - hypotenuse * hypotenuse)/(2.0 * adjacent * base)))
 
-def calc_hypotenuse(adjacent, opposite):
-    hypotenuse = sqrt((adjacent^2 + opposite^2))
+# calc_hypotenuse_right 
+# calculates the hypotenuse of a right triangle
+def calc_hypotenuse_right_triangle(adjacent, opposite):
+    hypotenuse =  sqrt((adjacent^2 + opposite^2))
     return hypotenuse
 
 def receive_coords(data):
@@ -46,41 +55,55 @@ def receive_coords(data):
     # Receive img coords from opencv_find as Int16MultiArray
     # rospy.Publisher(str, Int16MultiArray, queue_size=1)
     # variable = Int16MulitArray
+    #
+    #           |  | - arm base
+    # 0 1 2 3 4 5 6 7 8 9
+    # 1 0 0 0 0 0 0 0 0 0
+    # 2 0 0 0 0 0 0 0 0 0
+    # 3 0 0 0 0 0 0 0 0 0
+    # 4 0 0 0 0 0 0 0 0 0
+    # 5 0 0 0 0 0 0 0 0 0
+    #           | | - camera stand
 
     coords = data.data # [x, y]  or  "x, y"
 
     # convert variable to usable values
-    x = 0.0
-    y = 0.0
-    # if String
-    if isinstance(coords, str):
-        x, y = coords.split(', ')
-        x = float(x)
-        y = float(y)
-    # If Int16MultiArray
-    else:
-        x = coords[0]
-        y = coords[1]
+    object_x_pos = 0.0
+    object_y_pos = 0.0
+    if isinstance(coords, str): # if String
+        object_x_pos, object_y_pos = coords.split(', ')
+        object_x_pos = float(object_x_pos)
+        object_y_pos = float(object_y_pos)
+    else:                      # If Int16MultiArray
+        object_x_pos = coords[0]
+        object_y_pos = coords[1]
 
 
     ##### translate coords for servos######
     base_servo = 7 # Just move the base during testing...
     # calculate base triangle
+
+    arm_x_pos = CAMERA_WIDTH / 2 # arm sits in middle
+    arm_y_pos = CAMERA_HEIGHT + ARM_HEIGHT_OFFSET # arm sits a little past the video frame
     
-    side = 720
-    base = 1280
-    base_video_offset = 205# the space between the base of the video and the arm
-    triangle_base = base / 2
-    triangle_side = side + base_video_offset
-    hypotenuse = calc_hypotenuse(triangle_base, triangle_side) # arm is in middle, so calculate triangle from left to middle
+    arm_to_obj_x = abs(object_x_pos - arm_x_pos) # if negative, the object is on the left when facing the arm
+    arm_to_obj_y = abs(object_y_pos - arm_y_pos) # subtracting a negative number makes the triangle bigger. Arm sits outside of square, so its offset is negative.
+
+    # create sides of the triangle that will be used to get the angle
+    diag_triangle_hypotenuse = calc_hypotenuse_right_triangle(arm_to_obj_x, arm_to_obj_y)
+    vert_triangle_hypotenuse = calc_hypotenuse_right_triangle(object_x_pos, arm_to_obj_y)
 
     ## Base Servo - Aim at object ##
-    base_pos = calc_base_pos(triangle_side, hypotenuse)
+    angle_arm_to_object = calc_angle_opposite_of_hypotenuse(diag_triangle_hypotenuse, vert_triangle_hypotenuse, arm_x_pos, )
     
+    # convert degrees to base servo position
+    base_pos = scale_between(angle_arm_to_object, 0, 180, LEFT, RIGHT)
+
     # if publishing as int16MultiArray, send base_pos as [new_x, new_y]
     servo_publisher.publish(str(base_servo) + ',' + str(base_pos)) 
 
-    ## TODO: Top sevos - reach for object ##
+
+    ## TODO: Top servos - reach for object ##
 
 
 

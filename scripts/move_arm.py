@@ -71,7 +71,7 @@ def receive_coords(data):
     object_x_pos = 0.0
     object_y_pos = 0.0
     if isinstance(coords, str): # if String
-        object_x_pos, object_y_pos = coords.split(', ')
+        object_x_pos, object_y_pos = coords.split(',')
         object_x_pos = float(object_x_pos)
         object_y_pos = float(object_y_pos)
     else:                      # If Int16MultiArray

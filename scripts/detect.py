@@ -41,7 +41,7 @@ from pycoral.utils.edgetpu import run_inference
 
 def main():
     ##### Given by TensorFlow example ####
-    default_model_dir = '../arm'
+    default_model_dir = '.'
     default_model = 'mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite'
     default_labels = 'coco_labels.txt'
     parser = argparse.ArgumentParser()
@@ -110,6 +110,30 @@ def append_objs_to_img(cv2_im, inference_size, objs, labels):
 class RosOpenCVWatcher():
     opencv_publisher = None
 
+    def get_ratio_coords(self, obj, cv2_im):
+        height, width, channels = cv2_im.shape
+        scale_x, scale_y = width / self.inference_size[0], height / self.inference_size[1]
+
+        # get pixel coordinates
+        # TODO: Optimize this
+        bbox = obj.bbox.scale(scale_x, scale_y)
+        x0, y0 = int(bbox.xmin), int(bbox.ymin)
+        x1, y1 = int(bbox.xmax), int(bbox.ymax)
+
+        # get center val
+        center_x = (x0 + x1) // 2
+        center_y = (y0 + y1) // 2
+
+        # convert pixel coordinates to ratio coordinates (0-1)
+        ratio_y = center_y / height
+        ratio_x = center_x / width
+        print("Center x: ", center_x)
+        print("Center y: ", center_y)
+        print("Scale x: ", scale_x)
+
+        return ratio_x, ratio_y
+        
+    
     def __init__(self, node_name="opencv_find", subscribe_to='voice_commands',
                  publish_to="opencv_coordinates", cap=None, labels=None, inference_size=None,
                  threshold=None, top_k=None, interpreter=None):
@@ -130,7 +154,7 @@ class RosOpenCVWatcher():
         self.top_k = top_k
         self.interpreter=interpreter
 
-    
+
     def find_object_callback(self, data):
         object_to_find = data.data
         print("Finding Object: ", object_to_find)
@@ -149,13 +173,24 @@ class RosOpenCVWatcher():
         objs = get_objects(self.interpreter, self.threshold)[:self.top_k]
         cv2_im = append_objs_to_img(cv2_im, self.inference_size, objs, self.labels)
 
-        coords='0.5,0.5'
+        # TODO Soon: find the object with the highest confidence and get that. 
+        # TODO: Find an object by name. For example, user says, "find pen" and it searches
+        #       for a pen. For now, find only the first object. 
+        if len(objs) == 0:
+            print("No object!")
+            # TODO: Speak, "object not found"
+            return
+        obj_to_find = objs[0]
+        ratio_x, ratio_y = self.get_ratio_coords(obj_to_find, cv2_im)
+        coords = str(ratio_x) + ',' + str(ratio_y)
+        
+        # share the object's location
         self.opencv_publisher.publish(coords)
 
         # show the fram efor 2000 ms
-        print("Showing image as processes")
-        cv2.imshow('frame', cv2_im)
-        cv2.waitKey(200)
+        print("Showing image")
+        # cv2.imshow('frame', cv2_im)
+        # cv2.waitKey(1)
 
         
 

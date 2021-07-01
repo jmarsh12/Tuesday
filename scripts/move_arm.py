@@ -40,7 +40,8 @@ def calc_base_pos(adjacent, hypotenuse):
 
 #
 def calc_angle_opposite_of_hypotenuse(hypotenuse, base, adjacent):
-    degrees(acos((adjacent * adjacent + base * base - hypotenuse * hypotenuse)/(2.0 * adjacent * base)))
+    angle = degrees(acos((adjacent * adjacent + base * base - hypotenuse * hypotenuse)/(2.0 * adjacent * base)))
+    return angle
 
 # calc_hypotenuse_right 
 # calculates the hypotenuse of a right triangle
@@ -65,8 +66,13 @@ def receive_coords(data):
     # 5 0 0 0 0 0 0 0 0 0
     #           | | - camera stand
 
+    print("Received coords: ", data.data)
+    
+    servo_publisher = rospy.Publisher('servo_control', String, queue_size=10)
     coords = data.data # [x, y]  or  "x, y"
 
+    home(servo_publisher)
+    
     # convert variable to usable values
     object_x_pos = 0.0
     object_y_pos = 0.0
@@ -80,7 +86,7 @@ def receive_coords(data):
 
 
     ##### translate coords for servos######
-    base_servo = 7 # Just move the base during testing...
+    base_servo = 4 # Just move the base during testing...
     # calculate base triangle
 
     arm_x_pos = CAMERA_WIDTH / 2 # arm sits in middle
@@ -98,6 +104,7 @@ def receive_coords(data):
     
     # convert degrees to base servo position
     base_pos = scale_between(angle_arm_to_object, 0, 180, LEFT, RIGHT)
+    base_pos = int(base_pos)
 
     # if publishing as int16MultiArray, send base_pos as [new_x, new_y]
     servo_publisher.publish(str(base_servo) + ',' + str(base_pos)) 
@@ -106,7 +113,8 @@ def receive_coords(data):
 
     ## TODO: Top servos - reach for object ##
 
-
+def home(servo_publisher):
+  servo_publisher.publish("(2,400),(3,500),(4,840),(5,500),(6,640),(7,450)") # one up from base
 
 # TODO: Call this before anything else
 def listener():
@@ -114,16 +122,19 @@ def listener():
     # create rospy node and subscribe to finger coordinates
     rospy.init_node('move_arm', anonymous = True)
     servo_publisher = rospy.Publisher('servo_control', String, queue_size=10)
+    # rospy.Subscriber('opencv_coordinates', String, callback=test)
     rospy.Subscriber('opencv_coordinates', String, callback=receive_coords)
+    
 
-    # home arm
-    servo_publisher.publish("(2,400),(3,500),(4,840),(5,500),(6,640),(7,450)") # one up from base
+    # TODO: home arm
+    
 
+    print("Move arm is running")
     rospy.spin()
 
 
 if __name__ == '__main__':
-    
-    print("Move_Arm is ready")
 
     listener()
+
+    print("Move_Arm is ready")

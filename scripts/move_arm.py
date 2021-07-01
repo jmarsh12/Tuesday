@@ -89,8 +89,8 @@ def listener():
 
     # create rospy node and subscribe to finger coordinates
     rospy.init_node('move_arm', anonymous = True)
-    rospy.Subscriber('opencv_coordinates', String, callback=receive_coords)
     servo_publisher = rospy.Publisher('servo_control', String, queue_size=10)
+    rospy.Subscriber('opencv_coordinates', String, callback=receive_coords)
 
     # home arm
     servo_publisher.publish("(2,400),(3,500),(4,840),(5,500),(6,640),(7,450)") # one up from base

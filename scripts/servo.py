@@ -90,7 +90,7 @@ def callback(data):
         servo = int(values[0])
         position  = int(values[1]) 
         moveServo(portHandler, packetHandler, servo, position)
-        time.sleep(1)
+        # time.sleep(1)
 
 def listener():
 

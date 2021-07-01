@@ -45,7 +45,7 @@ def calc_angle_opposite_of_hypotenuse(hypotenuse, base, adjacent):
 # calc_hypotenuse_right 
 # calculates the hypotenuse of a right triangle
 def calc_hypotenuse_right_triangle(adjacent, opposite):
-    hypotenuse =  sqrt((adjacent^2 + opposite^2))
+    hypotenuse =  sqrt((adjacent**2 + opposite**2))
     return hypotenuse
 
 def receive_coords(data):

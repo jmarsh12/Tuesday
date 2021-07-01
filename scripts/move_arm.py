@@ -101,7 +101,8 @@ def receive_coords(data):
 
     # if publishing as int16MultiArray, send base_pos as [new_x, new_y]
     servo_publisher.publish(str(base_servo) + ',' + str(base_pos)) 
-
+    time.sleep(0.3)
+    servo_publisher.publish(str(base_servo) + ',' + str(base_pos))
 
     ## TODO: Top servos - reach for object ##
 

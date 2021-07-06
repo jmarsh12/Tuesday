@@ -38,9 +38,9 @@ def calc_base_pos(adjacent, hypotenuse):
 
     return servo_pos
 
-#
-def calc_angle_opposite_of_hypotenuse(hypotenuse, base, adjacent):
-    angle = degrees(acos((adjacent * adjacent + base * base - hypotenuse * hypotenuse)/(2.0 * adjacent * base)))
+# for triangles other than right
+def calc_angle_opposite_of_side(side, base, adjacent):
+    angle = degrees(acos((adjacent * adjacent + base * base - side * side)/(2.0 * adjacent * base)))
     return angle
 
 # calc_hypotenuse_right 
@@ -85,10 +85,10 @@ def receive_coords(data):
         object_y_pos = coords[1]
 
 
-    ##### translate coords for servos######
-    base_servo = 4 # Just move the base during testing...
-    # calculate base triangle
+    ##### Calculate Servo Positions ######
 
+    # Calculate Base Servo Angle
+    base_servo = 4 
     arm_x_pos = CAMERA_WIDTH / 2 # arm sits in middle
     arm_y_pos = CAMERA_HEIGHT + ARM_HEIGHT_OFFSET # arm sits a little past the video frame
     
@@ -96,15 +96,35 @@ def receive_coords(data):
     arm_to_obj_y = abs(object_y_pos - arm_y_pos) # subtracting a negative number makes the triangle bigger. Arm sits outside of square, so its offset is negative.
 
     # create sides of the triangle that will be used to get the angle
-    diag_triangle_hypotenuse = calc_hypotenuse_right_triangle(arm_to_obj_x, arm_to_obj_y)
+    arm_to_object_len = calc_hypotenuse_right_triangle(arm_to_obj_x, arm_to_obj_y)
     vert_triangle_hypotenuse = calc_hypotenuse_right_triangle(object_x_pos, arm_to_obj_y)
 
-    ## Base Servo - Aim at object ##
-    angle_arm_to_object = calc_angle_opposite_of_hypotenuse(diag_triangle_hypotenuse, vert_triangle_hypotenuse, arm_x_pos, )
-    
+    ##  Aim arm at object - Base (rotating) Servo ##
+    angle_arm_to_object = calc_angle_opposite_of_hypotenuse(arm_to_object_len, vert_triangle_hypotenuse, arm_x_pos )
+
     # convert degrees to base servo position
     base_pos = scale_between(angle_arm_to_object, 0, 180, LEFT, RIGHT)
     base_pos = int(base_pos)
+
+    ## Reach for Object ##
+    shoulder_servo = 5 #Hip (arm base bending) Servo
+    wrist_twist_servo = 4
+    wrist_bend_servo = 3
+    elbow_servo = 6
+    
+    WRIST_LEN = 100 # TODO - add a real value. Measured in pixels
+    WRIST_HEIGHT = 100 # TODO: measure this, too.
+    SHOULDER_HEIGHT = 50 # TODO: measure this, too.  
+    SERVO_LEN = 100 # TODO: measure this, too.
+
+    wrist_bend_to_shoulder_width = arm_to_object_len - WRIST_LEN
+    wrist_bend_to_shoulder_height = WRIST_HEIGHT - SHOULDER_HEIGHT
+    wrist_bend_to_shoulder_hypotenuse = calc_hypotenuse_right_triangle( wrist_bend_to_shoulder_width, wrist_bend_to_shoulder_height )
+    elbow_angle = calc_angle_opposite_of_side(wrist_bend_to_shoulder_hypotenuse, SERVO_LEN, SERVO_LEN)
+    wrist_angle = calc_angle_opposite_of_side(SERVO_LEN, wrist_bend_to_shoulder_hypotenuse, SERVO_LEN)
+    shoulder_angle = wrist_angle
+
+    # TODO: Send angles to servos
 
     # if publishing as int16MultiArray, send base_pos as [new_x, new_y]
     servo_publisher.publish(str(base_servo) + ',' + str(base_pos)) 

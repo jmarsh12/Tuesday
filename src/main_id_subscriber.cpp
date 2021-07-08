@@ -15,10 +15,11 @@ void voiceCallback(const std_msgs::String::ConstPtr& msg)
   ROS_INFO("I heard: [%s]", msg->data.c_str());
   if (strcmp(msg->data.c_str(), "hello") == 0)
   {
-      std::system("espeak -vf4 \"hello\"");
+      std::system("flite -voice rms -t \"Hello\"");
   }
   if (strcmp(msg->data.c_str(), "object") == 0)
   {
+      std::system("flite -voice rms -t \"Searching out object\"");
       ss_message.clear();
       ss_message.str("");
       ss_message << "object";
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
 
   ROS_INFO("Starting main_id_subscriber");
   sub = n.subscribe("voice", 1000, voiceCallback);
-  opencv_pub = n.advertise<std_msgs::String>("opencv_find", 1000);
+  opencv_pub = n.advertise<std_msgs::String>("voice_commands", 1000);
   
   ros::spin();
 

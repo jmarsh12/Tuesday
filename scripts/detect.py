@@ -195,6 +195,7 @@ class RosOpenCVWatcher():
         
 
     def publish_coords(self, center_x, center_y):
+        global opencv_publisher
         if opencv_publisher is None:
             print("Error: opencv_publisher is not yet defined")
             return

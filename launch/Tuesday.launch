@@ -1,0 +1,28 @@
+<launch>
+<node
+	pkg="Tuesday"
+	type="main_id_subscriber"
+	name="subscriber"
+	/>
+<node
+	pkg="Tuesday"
+	type="id_continuous"
+	name="voice"
+	launch-prefix="lxterminal -e"
+	/>			  
+<node
+	pkg="Tuesday"
+	type="move_arm.py"
+	name="reach_for_object"
+	/>
+<node
+	pkg="Tuesday"
+	type="detect.py"
+	name="detect"
+	/>
+<node
+	pkg="Tuesday"
+	type="servo.py"
+	name="servo"
+	/>
+</launch>

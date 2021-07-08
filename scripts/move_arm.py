@@ -5,6 +5,38 @@
 # Publishes to servo_control
 ##################################################
 
+#################################################
+# Positions:
+#                             
+#                  500
+#            375    |   700
+#               \  ___ /
+# Backward       /  ^  \
+#        200 -- |  360  | -- 825   Forward
+#                \ ___ /
+#               /       \ 
+#              0       1023
+#
+# Droop from servo: compensate by about 50 (ex. 200 should be 250 to get a
+# 90 degree angle on the bottom, where the base hits 90 degrees at 200
+#
+# Mouth:
+#   Full open:     250
+#   Halfway:       450
+#   Full closed:   600
+#   Pressure hold: 700
+#   
+# Servos:
+#    3   
+#    #-#   7
+#    #   6
+#    #   5
+#    #   2
+#   _#_  4
+#
+#################################################
+
+
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Int16MultiArray
@@ -100,7 +132,7 @@ def receive_coords(data):
     vert_triangle_hypotenuse = calc_hypotenuse_right_triangle(object_x_pos, arm_to_obj_y)
 
     ##  Aim arm at object - Base (rotating) Servo ##
-    angle_arm_to_object = calc_angle_opposite_of_hypotenuse(arm_to_object_len, vert_triangle_hypotenuse, arm_x_pos )
+    angle_arm_to_object = calc_angle_opposite_of_side(arm_to_object_len, vert_triangle_hypotenuse, arm_x_pos )
 
     # convert degrees to base servo position
     base_pos = scale_between(angle_arm_to_object, 0, 180, LEFT, RIGHT)

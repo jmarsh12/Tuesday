@@ -1,25 +1,18 @@
-################################################################################
-# Set minimum required version of cmake, project name and compile options
-################################################################################
 cmake_minimum_required(VERSION 2.8.3)
-project(my_id_robot)
+project(Tuesday)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
-################################################################################
-# Find catkin packages and libraries for catkin and system dependencies
-################################################################################
-find_package(catkin REQUIRED
-  OpenCV REQUIRED
-  COMPONENTS
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
   message_generation
-  )
-
-message("OpenCV version: ${OpenCV_VERSION}")
+)
 
 ################################################################################
 # Declare ROS messages, services and actions
@@ -30,55 +23,51 @@ add_message_files(
   Open.msg
 )
 
-## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  FindObjectOpenCV.srv
-)
+## Uncomment this if the package has a setup.py. This macro ensures
+## modules and global scripts declared therein get installed
+## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
+# catkin_python_setup()
 
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
 
-################################################################################
-# Declare catkin specific configuration to be passed to dependent projects
-################################################################################
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if your package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES Tuesday
+#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  DEPENDS system_lib
   CATKIN_DEPENDS
   roscpp
   rospy
   std_msgs
-#  message_runtime
-#  FindObjectOpenCV
-#  DEPENDS system_lib
 )
 
-################################################################################
-# Build
-################################################################################
+###########
+## Build ##
+###########
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
   ${catkin_INCLUDE_DIRS}
   /usr/local/include/sphinxbase
   /usr/local/include/pocketsphinx
-  /opt/opencv-4.1.0/include/opencv4
   )
 
-link_directories(${OpenCV_LIB_DIR})
 
-add_executable(find_object_opencv src/find_object_opencv.cpp)
-target_link_libraries(
-  find_object_opencv
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES}  # opt/opencv-4.1.0/lib
-  )
+# target_link_libraries(
+#   ${catkin_LIBRARIES}
+#   )
 
-add_executable(main_opencv_object src/main_opencv_object.cpp)
-target_link_libraries(main_opencv_object
-  ${catkin_LIBRARIES})
+# target_link_libraries(
+#   ${catkin_LIBRARIES})
 #add_dependencies(find_object_opencv 
 #  ${{PROJECT_NAME}_EXPORTED_TARGETS}
 #  ${catkin_EXPORTED_TARGETS})
@@ -99,13 +88,25 @@ target_link_libraries(id_continuous
 install(
   TARGETS
   main_id_subscriber
-  find_object_opencv
-  main_opencv_object
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
 
 catkin_install_python(
   PROGRAMS
   scripts/servo.py
+  scripts/move_arm.py
+  scripts/detect.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   )
+#############
+## Testing ##
+#############
+
+## Add gtest based cpp test target and link libraries
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_Tuesday.cpp)
+# if(TARGET ${PROJECT_NAME}-test)
+#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
+# endif()
+
+## Add folders to be run by python nosetests
+# catkin_add_nosetests(test)

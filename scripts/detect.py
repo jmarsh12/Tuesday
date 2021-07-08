@@ -41,7 +41,7 @@ from pycoral.utils.edgetpu import run_inference
 
 def main():
     ##### Given by TensorFlow example ####
-    default_model_dir = '.'
+    default_model_dir = '/home/pi/ros_catkin_ws/src/Tuesday/tensorflow_models/'
     default_model = 'mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite'
     default_labels = 'coco_labels.txt'
     parser = argparse.ArgumentParser()
@@ -54,7 +54,7 @@ def main():
     parser.add_argument('--camera_idx', type=int, help='Index of which video source to use. ', default = 0)
     parser.add_argument('--threshold', type=float, default=0.1,
                         help='classifier score threshold')
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     
     print('Loading {} with {} labels.'.format(args.model, args.labels))
     interpreter = make_interpreter(args.model)

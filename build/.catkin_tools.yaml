@@ -1,0 +1,6 @@
+devel_space: /home/pi/ros_catkin_ws/src/Tuesday/devel
+install: false
+install_space: /home/pi/ros_catkin_ws/src/Tuesday/install
+profile: default
+source_space: /home/pi/ros_catkin_ws/src/Tuesday/src
+workspace: /home/pi/ros_catkin_ws/src/Tuesday

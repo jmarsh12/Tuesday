@@ -21,5 +21,11 @@ The Raspberry Pi will be the brain of the project, running Robot Operating Syste
 This is a project to help us and other students to learn OpenCV and ROS. This can be extended
 to any other robotics systems from a fruit picker to an ankle biter/pooper scooper.
 
+# Requirements
+flite
+opencv
+ros
+coral - Run "git clone https://github.com/google-coral/examples-camera.git --depth 1" in terminal
+
 ## Authors:
 ### Jeff Marsh and Adam Amott

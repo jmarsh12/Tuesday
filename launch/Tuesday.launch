@@ -10,16 +10,16 @@
 	name="voice"
 	launch-prefix="lxterminal -e"
 	/>			  
-<node
+<!-- <node
 	pkg="Tuesday"
 	type="move_arm.py"
 	name="reach_for_object"
-	/>
-<node
+	/> -->
+<!-- <node
 	pkg="Tuesday"
 	type="detect.py"
 	name="detect"
-	/>
+	/> -->
 <node
 	pkg="Tuesday"
 	type="servo.py"

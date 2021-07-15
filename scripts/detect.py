@@ -26,6 +26,9 @@ python3 detect.py \
   --labels ${TEST_DATA}/coco_labels.txt
 
 """
+
+SHOW_IMAGES = False
+
 import argparse
 import cv2
 import os
@@ -127,9 +130,12 @@ class RosOpenCVWatcher():
         # convert pixel coordinates to ratio coordinates (0-1)
         ratio_y = center_y / height
         ratio_x = center_x / width
+        print("Max x: ", width)
+        print("Max y: ", height)
         print("Center x: ", center_x)
         print("Center y: ", center_y)
         print("Scale x: ", scale_x)
+        print("\n")
 
         return ratio_x, ratio_y
         
@@ -160,7 +166,9 @@ class RosOpenCVWatcher():
         print("Finding Object: ", object_to_find)
 
         ################ tensorstuff ##########
-        
+        self.cap.release()
+        self.cap = cv2.VideoCapture(0)
+
         ret, frame = self.cap.read()
         if not ret:
             print("find_object: Capture image failed...")
@@ -187,11 +195,11 @@ class RosOpenCVWatcher():
         # share the object's location
         self.opencv_publisher.publish(coords)
 
-        # show the fram efor 2000 ms
-        print("Showing image")
-        # cv2.imshow('frame', cv2_im)
-        # cv2.waitKey(1)
-
+        # show the frame for 2000 ms
+        if SHOW_IMAGES:
+            print("Showing image")
+            cv2.imshow('frame', cv2_im)
+            cv2.waitKey(0)
         
 
     def publish_coords(self, center_x, center_y):

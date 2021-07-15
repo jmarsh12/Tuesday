@@ -67,7 +67,7 @@ def moveServo(portHandler, packetHandler, number, position):
     dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler, number, ADDR_PRO_GOAL_POSITION, position)
     if dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
-    time.sleep(1)
+    # time.sleep(1)
     
 def closeServo(portHandler, packetHandler, number):
     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, number, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE)

@@ -8,32 +8,30 @@ down, etc.). We will be learning Open CV and speech recognition to utilize the
 commands mentioned earlier.
 
 # Development Environment
-The Raspberry Pi will be the brain of the project, running Robot Operating 
-System Noetic. Python will be the main language in use. OpenCV will be used 
-for object recognition and location. PocketSphinx will be used for voice 
-commands (i.e. 'turn left', 'look right'...). eSpeak will be used for voice 
-responses and status updates. 
+The Raspberry Pi acts as the brain of the project, running Robot Operating 
+System Noeticwith Python as the main language and a little C++. OpenCV (as used
+with Google's Coral) is used to find objects. PocketSphinx translates speech to voice 
+commands (for now, just 'object' to locate an object and throw it). Flite, a speech-to-text
+program, is used to repond to the user. 
 
 # Useful Websites
 [Stack Overflow](https://stackoverflow.com/)  
 [ROS Wiki](http://wiki.ros.org/Documentation)  
 [YouTube](https://youtube.com)
 
-# TODO
-* N/A
-
 # Story
-This is a project to help us and other students to learn OpenCV and ROS. 
-This can be extended
-to any other robotics systems from a fruit picker to an ankle biter 
-to a hunter drone.
+This was a project to practice using OpenCV, the Robot Operating System, and Python. 
 
 # Requirements
 Flite  
 PocketSphinx  
 OpenCv  
 ROS  
-CORAL - Run "git clone https://github.com/google-coral/examples-camera.git --depth 1" in terminal  
+Coral - Run "git clone https://github.com/google-coral/examples-camera.git --depth 1" in terminal
+
+# TODO
+- [ ] Write setup script
+- [ ] Switch from Coral to basic OpenCV to improve costs
 
 ## Authors:
 ### Jeff Marsh and Adam Amott

@@ -6,6 +6,7 @@ people. We want the arm to reach for a point designated by the user by touching
 the point. It will also respond to voice commands (turn left or right, up or 
 down, etc.). We will be learning Open CV and speech recognition to utilize the
 commands mentioned earlier.
+[Result](https://www.youtube.com/watch?v=cv7r70pevNQ)
 
 # Development Environment
 The Raspberry Pi acts as the brain of the project, running Robot Operating 

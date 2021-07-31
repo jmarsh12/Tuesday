@@ -5,8 +5,9 @@ Our goal is to learn how to use ROS to interact with the physical world and
 people. We want the arm to reach for a point designated by the user by touching
 the point. It will also respond to voice commands (turn left or right, up or 
 down, etc.). We will be learning Open CV and speech recognition to utilize the
-commands mentioned earlier.
-[Result](https://www.youtube.com/watch?v=cv7r70pevNQ)
+commands mentioned earlier. 
+[Video](https://www.youtube.com/watch?v=cv7r70pevNQ).
+![The arm setup we are working with](https://user-images.githubusercontent.com/54421854/127751043-66a7e479-079c-4c24-a3e2-84819cb79107.jpg)
 
 # Development Environment
 The Raspberry Pi acts as the brain of the project, running Robot Operating 
